@@ -17,10 +17,10 @@ export const Route = createFileRoute("/")({
         content:
           "OLIVARA سبراي طبيعي بزيت الزيتون والأرغان كيساعد على العناية بالشعر. الدفع عند الاستلام والتوصيل لجميع مدن المغرب.",
       },
-      { property: "og:title", content: "OLIVARA — زيت طبيعي لتقوية الشعر" },
+      { property: "og:title", content: "OLIVARA — زيت طبيعي لتقوية الشعر | 79 DH" },
       {
         property: "og:description",
-        content: "رجع الحيوية لشعرك بطريقة طبيعية. عرض خاص: عبوتان بـ129 DH.",
+        content: "OLIVARA سبراي طبيعي بزيت الزيتون والأرغان كيساعد على العناية بالشعر. الدفع عند الاستلام والتوصيل لجميع مدن المغرب.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
