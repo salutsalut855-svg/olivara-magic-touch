@@ -21,9 +21,9 @@ export function StickyBars() {
         <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2">
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <span className="truncate text-sm font-bold text-foreground">
-              عبوتان <span className="text-primary">129 DH</span>
+              عبوتان <span dir="ltr" className="text-primary">129 DH</span>
             </span>
-            <span className="hidden text-xs text-muted-foreground line-through sm:inline">158 DH</span>
+            <span className="hidden text-xs text-muted-foreground line-through sm:inline" dir="ltr">158 DH</span>
           </div>
           <div className="hidden sm:block">
             <Countdown compact />
