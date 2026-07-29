@@ -92,8 +92,8 @@ export function OrderForm() {
           اختر العرض
         </label>
         <select id="offer" name="offer" defaultValue="two" className={field}>
-          <option value="one">عبوة واحدة - 79 DH</option>
-          <option value="two">عبوتان - 129 DH</option>
+          <option value="one">عبوة واحدة - 89 DH</option>
+          <option value="two">عبوتان - 149 DH</option>
         </select>
       </div>
 

@@ -11,13 +11,13 @@ import { useReveal } from "@/components/olivara/useReveal";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "OLIVARA — زيت طبيعي لتقوية الشعر | 79 DH" },
+      { title: "OLIVARA — زيت طبيعي لتقوية الشعر | 89 DH" },
       {
         name: "description",
         content:
           "OLIVARA سبراي طبيعي بزيت الزيتون والأرغان كيساعد على العناية بالشعر. الدفع عند الاستلام والتوصيل لجميع مدن المغرب.",
       },
-      { property: "og:title", content: "OLIVARA — زيت طبيعي لتقوية الشعر | 79 DH" },
+      { property: "og:title", content: "OLIVARA — زيت طبيعي لتقوية الشعر | 89 DH" },
       {
         property: "og:description",
         content: "OLIVARA سبراي طبيعي بزيت الزيتون والأرغان كيساعد على العناية بالشعر. الدفع عند الاستلام والتوصيل لجميع مدن المغرب.",
@@ -156,7 +156,7 @@ function Index() {
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="reveal rounded-3xl border border-border bg-card p-7 text-center shadow-soft transition-transform hover:-translate-y-1">
               <h3 className="text-lg font-extrabold text-foreground">عبوة واحدة</h3>
-              <p dir="ltr" className="mt-4 text-4xl font-black text-primary">79 DH</p>
+              <p dir="ltr" className="mt-4 text-4xl font-black text-primary">89 DH</p>
               <p className="mt-3 text-sm text-muted-foreground">مثالية للتجربة</p>
               <a
                 href="#order"
@@ -172,8 +172,8 @@ function Index() {
               </span>
               <h3 className="mt-2 text-lg font-extrabold text-foreground">عبوتان</h3>
               <div className="mt-4 flex items-center justify-center gap-3">
-                <p dir="ltr" className="text-4xl font-black text-primary">129 DH</p>
-                <span dir="ltr" className="text-lg text-muted-foreground line-through">158 DH</span>
+                <p dir="ltr" className="text-4xl font-black text-primary">149 DH</p>
+                <span dir="ltr" className="text-lg text-muted-foreground line-through">178 DH</span>
               </div>
               <span className="mt-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">
                 وفر 29 درهم
