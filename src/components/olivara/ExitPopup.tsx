@@ -24,7 +24,7 @@ export function ExitPopup() {
         <p className="text-sm font-bold text-accent">🔥 عرض خاص</p>
         <h3 className="mt-2 text-xl font-extrabold text-foreground">قبل أن تغادر...</h3>
         <p className="mt-2 text-sm text-muted-foreground">
-          احصل على أفضل عرض: عبوتان بـ<span className="font-bold text-primary">129 DH</span>.
+          احصل على أفضل عرض: عبوتان بـ<span className="font-bold text-primary">149 DH</span>.
         </p>
         <a
           href="#order"

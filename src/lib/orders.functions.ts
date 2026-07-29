@@ -20,7 +20,7 @@ export const submitOrder = createServerFn({ method: "POST" })
     const range = "ecom!A:F";
     const url = `https://connector-gateway.lovable.dev/google_sheets/v4/spreadsheets/${spreadsheetId}/values/${range}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
 
-    const offerLabel = data.offer === "two" ? "عبوتان - 129 DH" : "عبوة واحدة - 79 DH";
+    const offerLabel = data.offer === "two" ? "عبوتان - 149 DH" : "عبوة واحدة - 89 DH";
     const row = [
       offerLabel,
       new Date().toLocaleDateString("fr-FR"),
