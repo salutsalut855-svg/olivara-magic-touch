@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
+import { useServerFn } from "@tanstack/react-start";
+import { submitOrder } from "@/lib/orders.functions";
 
 const schema = z.object({
   name: z.string().trim().min(3, "المرجو كتابة الاسم الكامل").max(80),
@@ -15,8 +17,11 @@ const schema = z.object({
 export function OrderForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [serverError, setServerError] = useState("");
+  const send = useServerFn(submitOrder);
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const parsed = schema.safeParse(Object.fromEntries(fd));
@@ -27,7 +32,16 @@ export function OrderForm() {
       return;
     }
     setErrors({});
-    setDone(true);
+    setServerError("");
+    setSending(true);
+    try {
+      await send({ data: parsed.data });
+      setDone(true);
+    } catch {
+      setServerError("وقع مشكل فإرسال الطلب. المرجو المحاولة مرة أخرى.");
+    } finally {
+      setSending(false);
+    }
   }
 
   const field =
@@ -85,10 +99,14 @@ export function OrderForm() {
 
       <button
         type="submit"
-        className="w-full rounded-2xl bg-olive-gradient py-4 text-lg font-extrabold text-primary-foreground shadow-lift transition-transform hover:scale-[1.01] active:scale-[0.99]"
+        disabled={sending}
+        className="w-full rounded-2xl bg-olive-gradient py-4 text-lg font-extrabold text-primary-foreground shadow-lift transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
       >
-        تأكيد الطلب
+        {sending ? "كنسجلو الطلب..." : "تأكيد الطلب"}
       </button>
+      {serverError && (
+        <p className="text-center text-xs font-medium text-destructive">{serverError}</p>
+      )}
       <p className="text-center text-xs text-muted-foreground">
         💵 الدفع عند الاستلام • 🚚 التوصيل لجميع مدن المغرب
       </p>
