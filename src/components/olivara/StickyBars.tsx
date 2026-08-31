@@ -21,9 +21,11 @@ export function StickyBars() {
         <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-2">
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <span className="truncate text-sm font-bold text-foreground">
-              عبوتان <span dir="ltr" className="text-primary">149 DH</span>
+              باقة 3 في 1 <span dir="ltr" className="text-primary">189 DH</span>
             </span>
-            <span className="hidden text-xs text-muted-foreground line-through sm:inline" dir="ltr">178 DH</span>
+            <span className="hidden text-xs text-muted-foreground line-through sm:inline" dir="ltr">
+              279 DH
+            </span>
           </div>
           <div className="hidden sm:block">
             <Countdown compact />
@@ -38,12 +40,17 @@ export function StickyBars() {
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur md:hidden">
-        <a
-          href="#order"
-          className="block rounded-2xl bg-olive-gradient py-3.5 text-center text-base font-extrabold text-primary-foreground shadow-lift"
-        >
-          اطلب الآن — الدفع عند الاستلام
-        </a>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+          <p className="min-w-0 truncate text-sm font-bold text-foreground">
+            باقة 3 في 1 بـ <span dir="ltr">189 DH</span> (توصيل فابور)
+          </p>
+          <a
+            href="#order"
+            className="shrink-0 rounded-2xl bg-olive-gradient px-5 py-3 text-center text-base font-extrabold text-primary-foreground shadow-lift"
+          >
+            اطلب الآن
+          </a>
+        </div>
       </div>
     </>
   );

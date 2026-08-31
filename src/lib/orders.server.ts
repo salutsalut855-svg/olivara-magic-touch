@@ -7,7 +7,7 @@ export type OrderRow = {
   phone: string;
   city: string;
   address: string;
-  offer: "one" | "two";
+  offer: "pack";
 };
 
 function headers() {
@@ -63,7 +63,7 @@ export async function appendOrderRow(data: OrderRow) {
     }),
   });
 
-  const offerLabel = data.offer === "two" ? "عبوتان - 149 DH" : "عبوة واحدة - 89 DH";
+  const offerLabel = "باقة OLIVARA 3 في 1 - 189 DH (توصيل مجاني)";
   const row = [
     offerLabel,
     formatDate(new Date()),
