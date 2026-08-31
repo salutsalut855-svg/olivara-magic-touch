@@ -5,7 +5,7 @@ function pad(n: number) {
 }
 
 export function Countdown({ compact = false }: { compact?: boolean }) {
-  const [left, setLeft] = useState(4 * 3600 + 32 * 60 + 11);
+  const [left, setLeft] = useState(2 * 3600 + 45 * 60 + 12);
 
   useEffect(() => {
     const id = setInterval(() => setLeft((s) => (s > 0 ? s - 1 : 0)), 1000);

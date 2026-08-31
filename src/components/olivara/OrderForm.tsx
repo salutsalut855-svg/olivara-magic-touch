@@ -11,10 +11,9 @@ const schema = z.object({
     .regex(/^[0-9+\s-]{9,15}$/, "رقم الهاتف غير صحيح"),
   city: z.string().trim().min(2, "المرجو كتابة المدينة").max(60),
   address: z.string().trim().min(5, "المرجو كتابة العنوان").max(200),
-  offer: z.enum(["one", "two"]),
 });
 
-export function OrderForm() {
+export function OrderForm({ compact = false }: { compact?: boolean }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
   const [sending, setSending] = useState(false);
@@ -35,7 +34,7 @@ export function OrderForm() {
     setServerError("");
     setSending(true);
     try {
-      await send({ data: parsed.data });
+      await send({ data: { ...parsed.data, offer: "pack" as const } });
       setDone(true);
     } catch {
       setServerError("وقع مشكل فإرسال الطلب. المرجو المحاولة مرة أخرى.");
@@ -55,7 +54,7 @@ export function OrderForm() {
         </div>
         <h3 className="mt-4 text-xl font-extrabold text-foreground">تم تسجيل طلبك</h3>
         <p className="mt-2 text-sm text-muted-foreground">
-          غادي نتواصلو معاك عبر الهاتف باش نأكدو الطلب. شكراً على ثقتك.
+          غادي نتواصلو معاك عبر الهاتف باش نأكدو العنوان قبل إرسال الشحنة. شكراً على ثقتك.
         </p>
       </div>
     );
@@ -64,17 +63,20 @@ export function OrderForm() {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4 text-right">
       {[
-        { name: "name", label: "الاسم الكامل", type: "text", ph: "مثال: أمينة بنعلي" },
-        { name: "phone", label: "رقم الهاتف", type: "tel", ph: "06XXXXXXXX" },
+        { name: "name", label: "الاسم والنسب", type: "text", ph: "مثال: أمينة بنعلي" },
+        { name: "phone", label: "رقم الهاتف / واتساب", type: "tel", ph: "06XXXXXXXX" },
         { name: "city", label: "المدينة", type: "text", ph: "الدار البيضاء" },
-        { name: "address", label: "العنوان", type: "text", ph: "الحي، الشارع، الرقم" },
+        { name: "address", label: "العنوان أو الحي", type: "text", ph: "الحي، الشارع، الرقم" },
       ].map((f) => (
         <div key={f.name}>
-          <label htmlFor={f.name} className="mb-1.5 block text-sm font-bold text-foreground">
+          <label
+            htmlFor={`${compact ? "m-" : ""}${f.name}`}
+            className="mb-1.5 block text-sm font-bold text-foreground"
+          >
             {f.label}
           </label>
           <input
-            id={f.name}
+            id={`${compact ? "m-" : ""}${f.name}`}
             name={f.name}
             type={f.type}
             placeholder={f.ph}
@@ -87,28 +89,22 @@ export function OrderForm() {
         </div>
       ))}
 
-      <div>
-        <label htmlFor="offer" className="mb-1.5 block text-sm font-bold text-foreground">
-          اختر العرض
-        </label>
-        <select id="offer" name="offer" defaultValue="two" className={field}>
-          <option value="one">عبوة واحدة - 89 DH</option>
-          <option value="two">عبوتان - 149 DH</option>
-        </select>
+      <div className="rounded-2xl border border-gold-soft bg-cream px-4 py-3 text-sm font-bold text-foreground">
+        باقة OLIVARA الشاملة (3 منتجات) — <span dir="ltr">189 DH</span> فقط (توصيل مجاني)
       </div>
 
       <button
         type="submit"
         disabled={sending}
-        className="w-full rounded-2xl bg-olive-gradient py-4 text-lg font-extrabold text-primary-foreground shadow-lift transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
+        className="w-full animate-[pulse_2.4s_cubic-bezier(0.4,0,0.6,1)_infinite] rounded-2xl bg-olive-gradient py-4 text-lg font-extrabold text-primary-foreground shadow-lift transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
       >
-        {sending ? "كنسجلو الطلب..." : "تأكيد الطلب"}
+        {sending ? "كنسجلو الطلب..." : "تأكيد الطلب الآن 🛍️"}
       </button>
       {serverError && (
         <p className="text-center text-xs font-medium text-destructive">{serverError}</p>
       )}
       <p className="text-center text-xs text-muted-foreground">
-        💵 الدفع عند الاستلام • 🚚 التوصيل لجميع مدن المغرب
+        سيتصل بك فريقنا لتأكيد العنوان قبل إرسال الشحنة.
       </p>
     </form>
   );
