@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import pack from "@/assets/olivara-pack.jpg.asset.json";
+import powder from "@/assets/olivara-powder.jpg.asset.json";
+import grid from "@/assets/olivara-grid.jpg.asset.json";
 import bottle from "@/assets/olivara-bottle.png.asset.json";
-import flatlay from "@/assets/olivara-flatlay.png.asset.json";
 import { Countdown } from "@/components/olivara/Countdown";
 import { StickyBars } from "@/components/olivara/StickyBars";
 import { FloatingActions } from "@/components/olivara/FloatingActions";
@@ -8,20 +10,17 @@ import { ExitPopup } from "@/components/olivara/ExitPopup";
 import { OrderForm } from "@/components/olivara/OrderForm";
 import { useReveal } from "@/components/olivara/useReveal";
 
+const TITLE = "OLIVARA Hair Care Pack — باقة 3 في 1 بـ 189 DH";
+const DESC =
+  "باقة OLIVARA الطبيعية 3 في 1: سبراي الأعشاب + بودرة الأعشاب المركزة + فرشاة تدليك الفروة. 189 DH مع توصيل مجاني والدفع عند الاستلام.";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "OLIVARA — زيت طبيعي لتقوية الشعر | 89 DH" },
-      {
-        name: "description",
-        content:
-          "OLIVARA سبراي طبيعي بزيت الزيتون والأرغان كيساعد على العناية بالشعر. الدفع عند الاستلام والتوصيل لجميع مدن المغرب.",
-      },
-      { property: "og:title", content: "OLIVARA — زيت طبيعي لتقوية الشعر | 89 DH" },
-      {
-        property: "og:description",
-        content: "OLIVARA سبراي طبيعي بزيت الزيتون والأرغان كيساعد على العناية بالشعر. الدفع عند الاستلام والتوصيل لجميع مدن المغرب.",
-      },
+      { title: TITLE },
+      { name: "description", content: DESC },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -29,50 +28,102 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+const products = [
+  {
+    img: bottle.url,
+    name: "بخاخ OLIVARA المغذي",
+    en: "Hair Mist Spray",
+    d: "تركيبة غنية بخلاصات الزيوت والأعشاب الطبيعية لترطيب وتقوية خصلات الشعر يومياً.",
+  },
+  {
+    img: powder.url,
+    name: "بودرة الأعشاب النباتية المركزة",
+    en: "Botanical Herbal Powder",
+    d: "خلطة نباتية طبيعية لتغذية فروة الرأس وتحفيز بصيلات الشعر بعمق.",
+  },
+  {
+    img: grid.url,
+    name: "فرشاة تدليك الفروة السيليكونية",
+    en: "Scalp Massager",
+    d: "سيليكون طبي ناعم لتحفيز الدورة الدموية ومساعدة الفروة على امتصاص المكونات بفعالية.",
+  },
+];
+
 const benefits = [
-  { icon: "🌿", text: "يساعد على تقليل مظهر تساقط الشعر" },
-  { icon: "✨", text: "يمنح الشعر مظهراً أكثر كثافة" },
-  { icon: "💧", text: "يرطب الشعر الجاف" },
-  { icon: "💫", text: "يعيد اللمعان الطبيعي" },
-  { icon: "🖐️", text: "سهل الاستعمال" },
-  { icon: "👩‍🦰", text: "مناسب للنساء والرجال" },
+  { icon: "💆", text: "يساعد على تحفيز الدورة الدموية في فروة الرأس" },
+  { icon: "🌿", text: "يساهم في تقليل مظهر تساقط الشعر وتقوية الجذور" },
+  { icon: "✨", text: "يمنح الشعر مظهراً أكثر كثافة ولمعاناً طبيعياً" },
+  { icon: "💧", text: "ينظف ويرطب الفروة بعمق دون إتلافها" },
+  { icon: "⏱️", text: "روتين منزلي سهل وسريع لجميع أفراد العائلة" },
+  { icon: "👩‍🦰", text: "مناسب 100% للنساء والرجال" },
 ];
 
 const steps = [
-  { n: "1", icon: "🧴", text: "رش المنتج على فروة الرأس." },
-  { n: "2", icon: "💆", text: "دلّك لمدة دقيقة أو دقيقتين." },
-  { n: "3", icon: "📅", text: "استعمله بانتظام للحصول على أفضل النتائج." },
+  {
+    n: "1",
+    icon: "🌿",
+    t: "التغذية والتحضير",
+    d: "خلط بودرة الأعشاب واستعمالها كقناع مغذي للفروة أو رش سبراي OLIVARA مباشرة على الجذور.",
+  },
+  {
+    n: "2",
+    icon: "💆",
+    t: "التدليك والتحفيز",
+    d: "دلّك الفروة بحركات دائرية بفرشاة السيليكون لمدة 2 إلى 3 دقائق لتحفيز الامتصاص.",
+  },
+  {
+    n: "3",
+    icon: "📅",
+    t: "الاستمرار",
+    d: "اعتمد هذا الروتين بانتظام لملاحظة مظهر شعر أقوى وأكثر صحة.",
+  },
 ];
 
 const ingredients = [
-  { name: "زيت الزيتون", icon: "🫒", d: "غني بمضادات الأكسدة" },
-  { name: "زيت الأرغان", icon: "🌰", d: "يساهم في نعومة الشعر" },
-  { name: "زيت إكليل الجبل", icon: "🌱", d: "ينعش فروة الرأس" },
-  { name: "البيوتين", icon: "💊", d: "يدعم مظهر الشعر" },
-  { name: "فيتامين E", icon: "🌟", d: "يساعد على الترطيب" },
+  { name: "زيت الزيتون البكر", icon: "🫒" },
+  { name: "زيت إكليل الجبل", icon: "🌱" },
+  { name: "مستخلصات عشبية نقية", icon: "🍃" },
+  { name: "البيوتين وفيتامين E", icon: "💊" },
+  { name: "زيت الأرغان الطبيعي", icon: "🌰" },
 ];
 
 const testimonials = [
-  { q: "لاحظت فرق كبير بعد أسابيع قليلة.", a: "أمينة، الدار البيضاء" },
-  { q: "الشعر ديالي ولا كيبان صحي بزاف.", a: "يوسف، الرباط" },
-  { q: "منتج رائع وسهل الاستعمال.", a: "سارة، مراكش" },
+  {
+    q: "باقة متكاملة، المشط كيحمق والسبراي ريحتو غزالة وطبيعية. لاحظت الفرق فالفروة ديالي من الأسابيع الأولى.",
+    a: "سارة، مراكش",
+  },
+  {
+    q: "الباك وصلني فـ24 ساعة والتوصيل كان فابور. الجودة ممتازة والبودرة مع المساج كتعطي إحساس نقي للفروة.",
+    a: "ياسين، الدار البيضاء",
+  },
+  { q: "أحسن روتين جربتو، طريقة الاستعمال ساهلة بزاف وما كياخدش الوقت.", a: "كوثر، الرباط" },
 ];
 
 const trust = [
-  { icon: "🚚", t: "التوصيل لجميع أنحاء المغرب" },
-  { icon: "💵", t: "الدفع عند الاستلام" },
-  { icon: "🔒", t: "طلب آمن 100%" },
-  { icon: "✅", t: "جودة عالية" },
+  { icon: "🚚", t: "توصيل مجاني وسريع", d: "لكافة مدن وقرى المغرب" },
+  { icon: "💵", t: "الدفع نقداً عند الاستلام", d: "حتى توصلك الأمانة" },
+  { icon: "📦", t: "تغليف فاخر وآمن", d: "يحمي منتجاتك" },
+  { icon: "🌿", t: "مكونات طبيعية", d: "مختارة بعناية" },
 ];
 
 const faq = [
-  { q: "هل مناسب للرجال والنساء؟", a: "نعم." },
   {
-    q: "كم يستغرق ظهور النتائج؟",
-    a: "تختلف النتائج من شخص لآخر حسب طبيعة الشعر والاستعمال المنتظم.",
+    q: "واش الباقة مناسبة للرجال والنساء؟",
+    a: "نعم، مصممة لكلا الجنسين ولكافة أنواع الشعر.",
   },
-  { q: "كيف يتم الدفع؟", a: "الدفع عند الاستلام." },
-  { q: "هل يوجد توصيل؟", a: "نعم، لجميع مدن المغرب." },
+  {
+    q: "شنو كتحتوي الباقة بالضبط؟",
+    a: "كتحتوي على: عبوة سبراي OLIVARA، كيس بودرة الأعشاب المركزة، وفرشاة تدليك فروة الرأس السيليكونية.",
+  },
+  { q: "واش التوصيل فابور؟", a: "نعم، التوصيل بالمجان 100% لجميع أنحاء المغرب." },
+  {
+    q: "كيفاش كنخلص؟",
+    a: "الدفع عند الاستلام كيوصلك الليفرور حتى للدار وتأكد من طلبيتك عاد كتخلص.",
+  },
+  {
+    q: "شحال كتاخد النتيجة باش تبان؟",
+    a: "تختلف النتائج من شخص لآخر حسب طبيعة الشعر ومداومة الاستعمال اليومي.",
+  },
 ];
 
 function SectionTitle({ kicker, title }: { kicker: string; title: string }) {
@@ -94,38 +145,57 @@ function Index() {
       <FloatingActions />
       <ExitPopup />
 
+      {/* ANNOUNCEMENT BAR */}
+      <div className="overflow-hidden bg-olive-gradient py-2">
+        <p className="animate-[marquee_18s_linear_infinite] whitespace-nowrap text-center text-sm font-bold text-primary-foreground">
+          🚚 التوصيل بالمجان لجميع مدن المغرب + الدفع عند الاستلام 💵
+        </p>
+      </div>
+
       {/* HERO */}
-      <header className="relative bg-cream pb-14 pt-10">
+      <header className="relative bg-cream pb-14 pt-8">
         <div className="mx-auto grid max-w-5xl gap-8 px-4 md:grid-cols-2 md:items-center">
           <div className="reveal order-2 text-center md:order-1 md:text-right">
             <p className="inline-flex items-center gap-2 rounded-full border border-gold-soft bg-background px-4 py-1.5 text-xs font-bold text-accent-foreground">
-              🫒 OLIVARA HAIR CARE
+              🫒 OLIVARA — PREMIUM BOTANICAL CARE
             </p>
-            <h1 className="mt-4 text-3xl font-black leading-tight text-foreground sm:text-4xl md:text-5xl">
-              رجع الحيوية لشعرك <span className="text-primary">بطريقة طبيعية</span>
+            <h1 className="mt-4 text-3xl font-black leading-tight text-foreground sm:text-4xl md:text-[2.75rem]">
+              رجع القوة والكثافة لشعرك مع باقة{" "}
+              <span className="text-primary">OLIVARA الطبيعية المتكاملة</span>
             </h1>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              OLIVARA كيساعد على العناية بالشعر، كيخلي الشعر يبان أكثر صحة، أنعم وأكثر لمعان مع
-              الاستعمال المنتظم.
+              روتين طبيعي 3 في 1 (سبراي الأعشاب + بودرة الأعشاب المركزة + فرشاة التدليك) مصمم
+              للعناية بالفروة وتغذية الشعر من الجذور مع الاستعمال المنتظم.
             </p>
-            <div className="mt-6 flex flex-col items-center gap-3 md:items-start">
-              <a
-                href="#order"
-                className="w-full rounded-2xl bg-olive-gradient px-8 py-4 text-center text-lg font-extrabold text-primary-foreground shadow-lift transition-transform hover:scale-[1.02] sm:w-auto"
-              >
-                اطلب الآن
-              </a>
-              <p className="text-sm text-muted-foreground">💵 الدفع عند الاستلام • 🚚 توصيل سريع</p>
+
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3 md:justify-start">
+              <span dir="ltr" className="text-4xl font-black text-primary">
+                189 DH
+              </span>
+              <span dir="ltr" className="text-lg text-muted-foreground line-through">
+                279 DH
+              </span>
+              <span className="rounded-full bg-gold-gradient px-3 py-1 text-xs font-extrabold text-accent-foreground">
+                وفر 90 DH + التوصيل مجاني 🚚
+              </span>
             </div>
+
+            <a
+              href="#order"
+              className="mt-6 inline-block w-full rounded-2xl bg-olive-gradient px-8 py-4 text-center text-lg font-extrabold text-primary-foreground shadow-lift transition-transform hover:scale-[1.02] sm:w-auto"
+            >
+              اطلب الباقة الآن (189 DH)
+            </a>
           </div>
+
           <div className="reveal order-1 md:order-2">
             <div className="relative mx-auto max-w-xs md:max-w-sm">
               <div className="absolute inset-0 -z-10 rounded-full bg-gold-soft/60 blur-3xl" />
               <img
-                src={bottle.url}
-                alt="سبراي OLIVARA زيت طبيعي لتقوية الشعر 50 مل"
-                width={1024}
-                height={1536}
+                src={pack.url}
+                alt="باقة OLIVARA 3 في 1: سبراي الأعشاب وبودرة الأعشاب وفرشاة تدليك الفروة"
+                width={576}
+                height={1024}
                 className="w-full rounded-3xl object-cover shadow-lift"
               />
             </div>
@@ -133,58 +203,29 @@ function Index() {
         </div>
       </header>
 
-      {/* OFFER TIMER */}
-      <section className="border-y border-border bg-background py-6">
-        <div className="reveal mx-auto flex max-w-3xl flex-col items-center gap-3 px-4">
-          <p className="text-sm font-bold text-foreground">العرض ينتهي خلال</p>
-          <Countdown />
-          <div className="w-full max-w-sm">
-            <div className="h-2.5 w-full overflow-hidden rounded-full bg-secondary">
-              <div className="h-full w-[82%] rounded-full bg-gold-gradient transition-all" />
-            </div>
-            <p className="mt-2 text-center text-xs text-muted-foreground">
-              بقي عدد محدود من العروض اليوم.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* PRICING */}
-      <section id="pricing" className="py-14">
+      {/* WHAT'S INSIDE */}
+      <section className="py-14">
         <div className="mx-auto max-w-5xl px-4">
-          <SectionTitle kicker="الأسعار" title="اختر العرض المناسب ليك" />
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div className="reveal rounded-3xl border border-border bg-card p-7 text-center shadow-soft transition-transform hover:-translate-y-1">
-              <h3 className="text-lg font-extrabold text-foreground">عبوة واحدة</h3>
-              <p dir="ltr" className="mt-4 text-4xl font-black text-primary">89 DH</p>
-              <p className="mt-3 text-sm text-muted-foreground">مثالية للتجربة</p>
-              <a
-                href="#order"
-                className="mt-6 block rounded-2xl border-2 border-primary py-3 font-extrabold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+          <SectionTitle kicker="محتوى الباقة" title="شنو كاين فباقة OLIVARA؟" />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {products.map((p) => (
+              <article
+                key={p.name}
+                className="reveal overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-transform hover:-translate-y-1"
               >
-                اطلب الآن
-              </a>
-            </div>
-
-            <div className="reveal relative rounded-3xl border-2 border-accent bg-cream p-7 text-center shadow-lift transition-transform hover:-translate-y-1">
-              <span className="absolute -top-3 right-1/2 translate-x-1/2 rounded-full bg-gold-gradient px-4 py-1 text-xs font-extrabold text-accent-foreground">
-                🔥 الأكثر طلباً
-              </span>
-              <h3 className="mt-2 text-lg font-extrabold text-foreground">عبوتان</h3>
-              <div className="mt-4 flex items-center justify-center gap-3">
-                <p dir="ltr" className="text-4xl font-black text-primary">149 DH</p>
-                <span dir="ltr" className="text-lg text-muted-foreground line-through">178 DH</span>
-              </div>
-              <span className="mt-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">
-                وفر 29 درهم
-              </span>
-              <a
-                href="#order"
-                className="mt-6 block rounded-2xl bg-olive-gradient py-3 font-extrabold text-primary-foreground shadow-soft"
-              >
-                اطلب الآن
-              </a>
-            </div>
+                <img
+                  src={p.img}
+                  alt={p.name}
+                  loading="lazy"
+                  className="h-48 w-full object-cover"
+                />
+                <div className="p-5 text-center">
+                  <h3 className="text-base font-extrabold text-foreground">{p.name}</h3>
+                  <p className="mt-0.5 text-[11px] tracking-widest text-accent">{p.en}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.d}</p>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -192,7 +233,7 @@ function Index() {
       {/* BENEFITS */}
       <section className="bg-cream py-14">
         <div className="mx-auto max-w-5xl px-4">
-          <SectionTitle kicker="الفوائد" title="علاش OLIVARA؟" />
+          <SectionTitle kicker="الفوائد" title="علاش باقة OLIVARA؟" />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {benefits.map((b) => (
               <div
@@ -202,7 +243,9 @@ function Index() {
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-secondary text-xl">
                   {b.icon}
                 </span>
-                <p className="min-w-0 pt-1.5 text-sm font-bold text-foreground">{b.text}</p>
+                <p className="min-w-0 pt-1 text-sm font-bold leading-relaxed text-foreground">
+                  {b.text}
+                </p>
               </div>
             ))}
           </div>
@@ -212,18 +255,19 @@ function Index() {
       {/* HOW TO USE */}
       <section className="py-14">
         <div className="mx-auto max-w-5xl px-4">
-          <SectionTitle kicker="طريقة الاستعمال" title="3 خطوات بسيطة" />
+          <SectionTitle kicker="طريقة الاستعمال" title="روتين ديال 3 خطوات" />
           <div className="grid gap-6 sm:grid-cols-3">
             {steps.map((s) => (
               <div
                 key={s.n}
-                className="reveal rounded-3xl border border-border bg-card p-6 text-center shadow-soft"
+                className="reveal rounded-2xl border border-border bg-card p-6 text-center shadow-soft"
               >
                 <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-olive-gradient text-3xl">
                   {s.icon}
                 </div>
                 <p className="mt-4 text-sm font-black text-accent">الخطوة {s.n}</p>
-                <p className="mt-1 text-sm font-bold text-foreground">{s.text}</p>
+                <h3 className="mt-1 text-base font-extrabold text-foreground">{s.t}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.d}</p>
               </div>
             ))}
           </div>
@@ -233,18 +277,16 @@ function Index() {
       {/* INGREDIENTS */}
       <section className="bg-cream py-14">
         <div className="mx-auto max-w-5xl px-4">
-          <SectionTitle kicker="المكونات" title="تركيبة غنية بالزيوت النباتية" />
-          <div className="reveal mb-8 overflow-hidden rounded-3xl shadow-lift">
+          <SectionTitle kicker="المكونات" title="مكونات طبيعية مختارة بعناية" />
+          <div className="reveal mb-8 overflow-hidden rounded-2xl shadow-lift">
             <img
-              src={flatlay.url}
-              alt="مكونات OLIVARA الطبيعية: زيت الزيتون والأرغان"
-              width={683}
-              height={1024}
+              src={grid.url}
+              alt="مكونات ومنتجات OLIVARA الطبيعية"
               loading="lazy"
-              className="h-56 w-full object-cover object-center sm:h-72"
+              className="h-56 w-full object-cover object-center sm:h-80"
             />
           </div>
-          <div className="grid gap-4 grid-cols-2 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
             {ingredients.map((i) => (
               <div
                 key={i.name}
@@ -252,22 +294,68 @@ function Index() {
               >
                 <div className="text-3xl">{i.icon}</div>
                 <p className="mt-2 text-sm font-extrabold text-foreground">{i.name}</p>
-                <p className="mt-1 text-xs text-muted-foreground">{i.d}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* PRICING */}
+      <section id="pricing" className="py-14">
+        <div className="mx-auto max-w-2xl px-4">
+          <SectionTitle kicker="العرض" title="باقة العناية الشاملة 3 في 1" />
+          <div className="reveal relative rounded-2xl border-2 border-accent bg-cream p-7 text-center shadow-lift">
+            <span className="absolute -top-3 right-1/2 translate-x-1/2 whitespace-nowrap rounded-full bg-gold-gradient px-4 py-1 text-xs font-extrabold text-accent-foreground">
+              🔥 عرض خاص
+            </span>
+            <ul className="mt-3 space-y-1.5 text-sm font-bold text-foreground">
+              <li>✔ سبراي OLIVARA المغذي</li>
+              <li>✔ بودرة الأعشاب المركزة</li>
+              <li>✔ فرشاة المساج السيليكونية</li>
+            </ul>
+            <div className="mt-5 flex items-center justify-center gap-3">
+              <p dir="ltr" className="text-5xl font-black text-primary">
+                189 DH
+              </p>
+              <span dir="ltr" className="text-lg text-muted-foreground line-through">
+                279 DH
+              </span>
+            </div>
+            <p className="mt-2 text-sm font-bold text-primary">🚚 توصيل مجاني لجميع المدن</p>
+
+            <div className="mt-6 flex flex-col items-center gap-2">
+              <p className="text-sm font-bold text-foreground">العرض ينتهي خلال</p>
+              <Countdown />
+            </div>
+
+            <div className="mt-6">
+              <div className="h-2.5 w-full overflow-hidden rounded-full bg-secondary">
+                <div className="h-full w-[82%] rounded-full bg-gold-gradient" />
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                بقي 9 باقات فقط بالسعر المخفض لليوم
+              </p>
+            </div>
+
+            <a
+              href="#order"
+              className="mt-6 block rounded-2xl bg-olive-gradient py-4 text-lg font-extrabold text-primary-foreground shadow-soft transition-transform hover:scale-[1.01]"
+            >
+              استفد من العرض الآن
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* TESTIMONIALS */}
-      <section className="py-14">
+      <section className="bg-cream py-14">
         <div className="mx-auto max-w-5xl px-4">
           <SectionTitle kicker="آراء الزبناء" title="شنو كيقولو علينا" />
           <div className="grid gap-5 sm:grid-cols-3">
             {testimonials.map((t) => (
               <figure
                 key={t.a}
-                className="reveal rounded-3xl border border-border bg-card p-6 shadow-soft"
+                className="reveal rounded-2xl border border-border bg-card p-6 shadow-soft"
               >
                 <div className="text-lg text-accent">⭐⭐⭐⭐⭐</div>
                 <blockquote className="mt-3 text-sm font-bold leading-relaxed text-foreground">
@@ -278,7 +366,7 @@ function Index() {
             ))}
           </div>
           <p className="reveal mt-6 text-center text-xs text-muted-foreground">
-            قد تختلف النتائج من شخص لآخر.
+            قد تختلف النتائج حسب طبيعة الشعر والاستعمال المنتظم.
           </p>
         </div>
       </section>
@@ -293,6 +381,7 @@ function Index() {
             >
               <div className="text-2xl">{t.icon}</div>
               <p className="mt-2 text-sm font-bold text-primary-foreground">{t.t}</p>
+              <p className="mt-0.5 text-xs text-primary-foreground/75">{t.d}</p>
             </div>
           ))}
         </div>
@@ -312,7 +401,7 @@ function Index() {
                   {f.q}
                   <span className="text-accent transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <p className="mt-3 text-sm text-muted-foreground">{f.a}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
               </details>
             ))}
           </div>
@@ -322,8 +411,11 @@ function Index() {
       {/* ORDER */}
       <section id="order" className="scroll-mt-20 bg-cream py-14">
         <div className="mx-auto max-w-md px-4">
-          <SectionTitle kicker="الطلب" title="عمّر المعلومات ديالك" />
-          <div className="reveal rounded-3xl border border-border bg-card p-6 shadow-lift">
+          <SectionTitle
+            kicker="الطلب"
+            title="أدخل معلوماتك للاستفادة من العرض (189 DH - التوصيل مجاني)"
+          />
+          <div className="reveal rounded-2xl border border-border bg-card p-6 shadow-lift">
             <OrderForm />
           </div>
         </div>
@@ -345,7 +437,7 @@ function Index() {
           </a>
         </nav>
         <p className="mx-auto mt-6 max-w-md px-4 text-[11px] leading-relaxed text-primary-foreground/60">
-          منتج للعناية بالشعر. لا يُستعمل كعلاج طبي. قد تختلف النتائج من شخص لآخر مع الاستعمال
+          منتجات للعناية بالشعر. لا تُستعمل كعلاج طبي. قد تختلف النتائج حسب طبيعة الشعر والاستعمال
           المنتظم.
         </p>
       </footer>
