@@ -1,6 +1,6 @@
 export function FloatingActions() {
   return (
-    <div className="fixed bottom-24 left-4 z-40 flex flex-col gap-3 md:bottom-6">
+    <div className="fixed bottom-28 left-3 z-30 flex flex-col gap-3 md:bottom-6">
       <a
         href="https://wa.me/212656688867"
         target="_blank"
