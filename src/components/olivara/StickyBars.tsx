@@ -14,7 +14,7 @@ export function StickyBars() {
   return (
     <>
       <div
-        className={`fixed inset-x-0 top-0 z-40 border-b border-border bg-background/95 backdrop-blur transition-transform duration-300 ${
+        className={`fixed inset-x-0 top-0 z-40 hidden border-b md:block border-border bg-background/95 backdrop-blur transition-transform duration-300 ${
           show ? "translate-y-0" : "-translate-y-full"
         }`}
       >

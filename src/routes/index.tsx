@@ -140,7 +140,7 @@ function Index() {
   const root = useReveal<HTMLDivElement>();
 
   return (
-    <div ref={root} className="overflow-x-hidden bg-background">
+    <div ref={root} className="overflow-x-hidden bg-background pb-24 md:pb-0">
       <StickyBars />
       <FloatingActions />
       <ExitPopup />
