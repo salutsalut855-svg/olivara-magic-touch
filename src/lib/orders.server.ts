@@ -31,38 +31,12 @@ async function call(path: string, init?: RequestInit) {
   return res.json() as Promise<any>;
 }
 
-async function getSheetId() {
-  const meta = await call(`/spreadsheets/${SPREADSHEET_ID}?fields=sheets.properties`);
-  const sheet = (meta.sheets ?? []).find(
-    (s: any) => s.properties?.title === SHEET_NAME,
-  );
-  if (!sheet) throw new Error(`Sheet "${SHEET_NAME}" not found`);
-  return sheet.properties.sheetId as number;
-}
-
 function formatDate(d: Date) {
   const p = (n: number) => String(n).padStart(2, "0");
   return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
 export async function appendOrderRow(data: OrderRow) {
-  const sheetId = await getSheetId();
-
-  // Insert an empty row right under the header so newest orders come first.
-  await call(`/spreadsheets/${SPREADSHEET_ID}:batchUpdate`, {
-    method: "POST",
-    body: JSON.stringify({
-      requests: [
-        {
-          insertDimension: {
-            range: { sheetId, dimension: "ROWS", startIndex: 1, endIndex: 2 },
-            inheritFromBefore: false,
-          },
-        },
-      ],
-    }),
-  });
-
   const offerLabel = "باقة OLIVARA 3 في 1 - 189 DH (توصيل مجاني)";
   const row = [
     offerLabel,
@@ -73,10 +47,10 @@ export async function appendOrderRow(data: OrderRow) {
     data.phone,
   ];
 
-  // RAW keeps the date as readable text instead of a Sheets serial number.
+  // Append to the next available row at the bottom of the sheet.
   await call(
-    `/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}!A2:F2?valueInputOption=RAW`,
-    { method: "PUT", body: JSON.stringify({ values: [row] }) },
+    `/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}!A:F:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
+    { method: "POST", body: JSON.stringify({ values: [row] }) },
   );
 
   return { ok: true as const };
