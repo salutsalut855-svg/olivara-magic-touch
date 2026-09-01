@@ -39,14 +39,14 @@ export function StickyBars() {
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur md:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-primary/20 bg-olive-gradient p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-4px_20px_rgba(0,0,0,0.15)] md:hidden">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-          <p className="min-w-0 truncate text-sm font-bold text-foreground">
+          <p className="min-w-0 truncate text-sm font-bold text-primary-foreground">
             باقة 3 في 1 بـ <span dir="ltr">189 DH</span> (توصيل فابور)
           </p>
           <a
             href="#order"
-            className="shrink-0 rounded-2xl bg-olive-gradient px-5 py-3 text-center text-base font-extrabold text-primary-foreground shadow-lift"
+            className="shrink-0 rounded-2xl bg-background px-5 py-3 text-center text-base font-extrabold text-primary shadow-lift"
           >
             اطلب الآن
           </a>
