@@ -2,10 +2,10 @@ export function FloatingActions() {
   return (
     <div className="fixed bottom-24 left-4 z-40 flex flex-col gap-3 md:bottom-6">
       <a
-        href="https://wa.me/212600000000"
+        href="https://wa.me/212656688867"
         target="_blank"
         rel="noreferrer"
-        aria-label="واتساب"
+        aria-label="واتساب +212 656-688867"
         className="grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-lift transition-transform hover:scale-110"
       >
         <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current" aria-hidden="true">
@@ -13,8 +13,8 @@ export function FloatingActions() {
         </svg>
       </a>
       <a
-        href="tel:+212600000000"
-        aria-label="اتصل بنا"
+        href="tel:+212656688867"
+        aria-label="اتصل بنا على +212 656-688867"
         className="grid h-12 w-12 place-items-center rounded-full bg-gold-gradient text-accent-foreground shadow-lift transition-transform hover:scale-110"
       >
         <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current" aria-hidden="true">
