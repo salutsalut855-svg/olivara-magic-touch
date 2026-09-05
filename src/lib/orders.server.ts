@@ -7,8 +7,9 @@ export type OrderRow = {
   phone: string;
   city: string;
   address: string;
-  offer: "pack";
+  offer: "pack" | "duo";
 };
+
 
 function headers() {
   const lovableKey = process.env.LOVABLE_API_KEY;
