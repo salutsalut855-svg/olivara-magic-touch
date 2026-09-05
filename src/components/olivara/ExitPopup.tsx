@@ -39,12 +39,6 @@ export function ExitPopup() {
         <div className="mt-5 text-right">
           <OrderForm compact />
         </div>
-        <button
-          onClick={() => setOpen(false)}
-          className="mt-3 text-xs text-muted-foreground underline"
-        >
-          لا، شكراً
-        </button>
       </div>
     </div>
   );
