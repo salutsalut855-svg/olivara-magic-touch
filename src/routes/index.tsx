@@ -210,6 +210,32 @@ function Index() {
         </div>
       </header>
 
+      {/* CERTIFICATES */}
+      <section className="bg-cream py-10">
+        <div className="mx-auto max-w-5xl px-4">
+          <div className="reveal mb-6 text-center">
+            <p className="text-sm font-bold tracking-widest text-accent">شهادات وجودة</p>
+            <h2 className="mt-2 text-xl font-extrabold text-foreground sm:text-2xl">
+              منتج موثوق ومضمون
+            </h2>
+            <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-gold-gradient" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {certificates.map((c) => (
+              <div
+                key={c.title}
+                className="reveal flex items-center gap-3 rounded-2xl border border-gold-soft bg-card p-4 shadow-soft"
+              >
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-olive-gradient text-xl text-primary-foreground">
+                  {c.icon}
+                </span>
+                <p className="text-xs font-extrabold leading-relaxed text-foreground">{c.title}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* WHAT'S INSIDE */}
       <section className="py-14">
         <div className="mx-auto max-w-5xl px-4">
