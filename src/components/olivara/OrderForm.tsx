@@ -13,11 +13,29 @@ const schema = z.object({
   address: z.string().trim().min(5, "المرجو كتابة العنوان").max(200),
 });
 
+const OFFERS = [
+  {
+    id: "pack" as const,
+    title: "الباقة الأساسية 3 في 1",
+    desc: "سبراي + بودرة + فرشاة",
+    price: "189 DH",
+    old: "279 DH",
+  },
+  {
+    id: "duo" as const,
+    title: "باقة عبوتين (الأكثر مبيعاً)",
+    desc: "2 سبراي + بودرة + فرشاة",
+    price: "229 DH",
+    old: "378 DH",
+  },
+];
+
 export function OrderForm({ compact = false }: { compact?: boolean }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
   const [sending, setSending] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [offer, setOffer] = useState<"pack" | "duo">("pack");
   const send = useServerFn(submitOrder);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -34,7 +52,7 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
     setServerError("");
     setSending(true);
     try {
-      await send({ data: { ...parsed.data, offer: "pack" as const } });
+      await send({ data: { ...parsed.data, offer } });
       setDone(true);
     } catch {
       setServerError("وقع مشكل فإرسال الطلب. المرجو المحاولة مرة أخرى.");
@@ -42,6 +60,7 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
       setSending(false);
     }
   }
+
 
   const field =
     "w-full rounded-2xl border border-border bg-background px-4 py-3 text-base outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15";
