@@ -7,8 +7,9 @@ export type OrderRow = {
   phone: string;
   city: string;
   address: string;
-  offer: "pack";
+  offer: "pack" | "duo";
 };
+
 
 function headers() {
   const lovableKey = process.env.LOVABLE_API_KEY;
@@ -37,7 +38,11 @@ function formatDate(d: Date) {
 }
 
 export async function appendOrderRow(data: OrderRow) {
-  const offerLabel = "باقة OLIVARA 3 في 1 - 189 DH (توصيل مجاني)";
+  const offerLabel =
+    data.offer === "duo"
+      ? "باقة OLIVARA عبوتين + بودرة + فرشاة - 229 DH (توصيل مجاني)"
+      : "باقة OLIVARA 3 في 1 - 189 DH (توصيل مجاني)";
+
   const row = [
     offerLabel,
     formatDate(new Date()),

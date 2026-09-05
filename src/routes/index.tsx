@@ -302,32 +302,69 @@ function Index() {
 
       {/* PRICING */}
       <section id="pricing" className="py-14">
-        <div className="mx-auto max-w-2xl px-4">
-          <SectionTitle kicker="العرض" title="باقة العناية الشاملة 3 في 1" />
-          <div className="reveal relative rounded-2xl border-2 border-accent bg-cream p-7 text-center shadow-lift">
-            <span className="absolute -top-3 right-1/2 translate-x-1/2 whitespace-nowrap rounded-full bg-gold-gradient px-4 py-1 text-xs font-extrabold text-accent-foreground">
-              🔥 عرض خاص
-            </span>
-            <ul className="mt-3 space-y-1.5 text-sm font-bold text-foreground">
-              <li>✔ سبراي OLIVARA المغذي</li>
-              <li>✔ بودرة الأعشاب المركزة</li>
-              <li>✔ فرشاة المساج السيليكونية</li>
-            </ul>
-            <div className="mt-5 flex items-center justify-center gap-3">
-              <p dir="ltr" className="text-5xl font-black text-primary">
-                189 DH
-              </p>
-              <span dir="ltr" className="text-lg text-muted-foreground line-through">
-                279 DH
+        <div className="mx-auto max-w-4xl px-4">
+          <SectionTitle kicker="العروض" title="اختار الباقة اللي مناسبة ليك" />
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="reveal relative rounded-2xl border-2 border-accent bg-cream p-7 text-center shadow-lift">
+              <span className="absolute -top-3 right-1/2 translate-x-1/2 whitespace-nowrap rounded-full bg-gold-gradient px-4 py-1 text-xs font-extrabold text-accent-foreground">
+                🔥 عرض خاص
               </span>
+              <h3 className="mt-3 text-lg font-extrabold text-foreground">الباقة الأساسية 3 في 1</h3>
+              <ul className="mt-3 space-y-1.5 text-sm font-bold text-foreground">
+                <li>✔ سبراي OLIVARA المغذي</li>
+                <li>✔ بودرة الأعشاب المركزة</li>
+                <li>✔ فرشاة المساج السيليكونية</li>
+              </ul>
+              <div className="mt-5 flex items-center justify-center gap-3">
+                <p dir="ltr" className="text-4xl font-black text-primary">
+                  189 DH
+                </p>
+                <span dir="ltr" className="text-lg text-muted-foreground line-through">
+                  279 DH
+                </span>
+              </div>
+              <p className="mt-2 text-sm font-bold text-primary">🚚 توصيل مجاني لجميع المدن</p>
+              <a
+                href="#order"
+                className="mt-6 block rounded-2xl bg-olive-gradient py-4 text-base font-extrabold text-primary-foreground shadow-soft transition-transform hover:scale-[1.01]"
+              >
+                اطلب الباقة الأساسية
+              </a>
             </div>
-            <p className="mt-2 text-sm font-bold text-primary">🚚 توصيل مجاني لجميع المدن</p>
 
-            <div className="mt-6 flex flex-col items-center gap-2">
+            <div className="reveal relative rounded-2xl border-2 border-primary bg-card p-7 text-center shadow-lift">
+              <span className="absolute -top-3 right-1/2 translate-x-1/2 whitespace-nowrap rounded-full bg-olive-gradient px-4 py-1 text-xs font-extrabold text-primary-foreground">
+                ⭐ الأكثر مبيعاً
+              </span>
+              <h3 className="mt-3 text-lg font-extrabold text-foreground">باقة العائلة (عبوتين)</h3>
+              <ul className="mt-3 space-y-1.5 text-sm font-bold text-foreground">
+                <li>✔ 2 سبراي OLIVARA المغذي</li>
+                <li>✔ بودرة الأعشاب المركزة</li>
+                <li>✔ فرشاة المساج السيليكونية</li>
+              </ul>
+              <div className="mt-5 flex items-center justify-center gap-3">
+                <p dir="ltr" className="text-4xl font-black text-primary">
+                  229 DH
+                </p>
+                <span dir="ltr" className="text-lg text-muted-foreground line-through">
+                  378 DH
+                </span>
+              </div>
+              <p className="mt-2 text-sm font-bold text-accent">💰 كتربح أكثر من 140 DH</p>
+              <a
+                href="#order"
+                className="mt-6 block rounded-2xl bg-olive-gradient py-4 text-base font-extrabold text-primary-foreground shadow-soft transition-transform hover:scale-[1.01]"
+              >
+                اطلب باقة عبوتين
+              </a>
+            </div>
+          </div>
+
+          <div className="reveal mx-auto mt-8 max-w-2xl rounded-2xl border border-gold-soft bg-cream p-6 text-center shadow-soft">
+            <div className="flex flex-col items-center gap-2">
               <p className="text-sm font-bold text-foreground">العرض ينتهي خلال</p>
               <Countdown />
             </div>
-
             <div className="mt-6">
               <div className="h-2.5 w-full overflow-hidden rounded-full bg-secondary">
                 <div className="h-full w-[82%] rounded-full bg-gold-gradient" />
@@ -336,16 +373,10 @@ function Index() {
                 بقي 9 باقات فقط بالسعر المخفض لليوم
               </p>
             </div>
-
-            <a
-              href="#order"
-              className="mt-6 block rounded-2xl bg-olive-gradient py-4 text-lg font-extrabold text-primary-foreground shadow-soft transition-transform hover:scale-[1.01]"
-            >
-              استفد من العرض الآن
-            </a>
           </div>
         </div>
       </section>
+
 
       {/* TESTIMONIALS */}
       <section className="bg-cream py-14">
