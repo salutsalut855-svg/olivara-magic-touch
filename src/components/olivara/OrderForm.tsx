@@ -81,6 +81,37 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4 text-right">
+      <div>
+        <p className="mb-2 text-sm font-bold text-foreground">اختار الباقة</p>
+        <div className="grid gap-3">
+          {OFFERS.map((o) => (
+            <button
+              type="button"
+              key={o.id}
+              onClick={() => setOffer(o.id)}
+              className={`flex items-center justify-between gap-3 rounded-2xl border-2 px-4 py-3 text-right transition ${
+                offer === o.id
+                  ? "border-primary bg-cream shadow-soft"
+                  : "border-border bg-background"
+              }`}
+            >
+              <span className="min-w-0">
+                <span className="block text-sm font-extrabold text-foreground">{o.title}</span>
+                <span className="block text-xs text-muted-foreground">{o.desc}</span>
+              </span>
+              <span className="shrink-0 text-left">
+                <span dir="ltr" className="block text-base font-black text-primary">
+                  {o.price}
+                </span>
+                <span dir="ltr" className="block text-xs text-muted-foreground line-through">
+                  {o.old}
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {[
         { name: "name", label: "الاسم والنسب", type: "text", ph: "مثال: أمينة بنعلي" },
         { name: "phone", label: "رقم الهاتف / واتساب", type: "tel", ph: "06XXXXXXXX" },
@@ -109,8 +140,10 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
       ))}
 
       <div className="rounded-2xl border border-gold-soft bg-cream px-4 py-3 text-sm font-bold text-foreground">
-        باقة OLIVARA الشاملة (3 منتجات) — <span dir="ltr">189 DH</span> فقط (توصيل مجاني)
+        {OFFERS.find((o) => o.id === offer)!.title} —{" "}
+        <span dir="ltr">{OFFERS.find((o) => o.id === offer)!.price}</span> (توصيل مجاني)
       </div>
+
 
       <button
         type="submit"
