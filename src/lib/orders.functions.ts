@@ -7,7 +7,7 @@ const orderSchema = z.object({
   phone: z.string().trim().min(9).max(20),
   city: z.string().trim().min(2).max(60),
   address: z.string().trim().min(5).max(200),
-  offer: z.enum(["pack"]).default("pack"),
+  offer: z.enum(["pack", "duo"]).default("pack"),
 });
 
 export const submitOrder = createServerFn({ method: "POST" })
