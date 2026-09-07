@@ -6,24 +6,24 @@ export function ExitPopup() {
 
   useEffect(() => {
     if (sessionStorage.getItem("olivara-exit")) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const fire = () => {
       setOpen(true);
       sessionStorage.setItem("olivara-exit", "1");
-      document.removeEventListener("mouseout", onLeave);
-      clearTimeout(mobileTimer);
+      window.removeEventListener("scroll", onScroll);
+      if (timer) clearTimeout(timer);
     };
-    const onLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0) fire();
+    const onScroll = () => {
+      if (timer) return;
+      timer = setTimeout(fire, 10000);
     };
-    const mobileTimer = setTimeout(() => {
-      if (window.matchMedia("(max-width: 767px)").matches) fire();
-    }, 45000);
-    document.addEventListener("mouseout", onLeave);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      document.removeEventListener("mouseout", onLeave);
-      clearTimeout(mobileTimer);
+      window.removeEventListener("scroll", onScroll);
+      if (timer) clearTimeout(timer);
     };
   }, []);
+
 
   if (!open) return null;
 
