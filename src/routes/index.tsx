@@ -7,7 +7,7 @@ import { Countdown } from "@/components/olivara/Countdown";
 import { StickyBars } from "@/components/olivara/StickyBars";
 import { FloatingActions } from "@/components/olivara/FloatingActions";
 import { ExitPopup } from "@/components/olivara/ExitPopup";
-import { DesktopBlock } from "@/components/olivara/DesktopBlock";
+
 import { OrderForm } from "@/components/olivara/OrderForm";
 import { useReveal } from "@/components/olivara/useReveal";
 
@@ -149,7 +149,6 @@ function Index() {
 
   return (
     <div ref={root} className="overflow-x-hidden bg-background pb-24 md:pb-0">
-      <DesktopBlock />
       <StickyBars />
       <FloatingActions />
       <ExitPopup />
