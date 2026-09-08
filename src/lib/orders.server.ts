@@ -19,14 +19,82 @@ type ServiceAccount = {
   private_key: string;
 };
 
+const EMBEDDED_ACCOUNT: ServiceAccount = {
+  client_email: "oussama@amazing-pipe-508010-q7.iam.gserviceaccount.com",
+  private_key: `-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDJTEQNCjO5URWS
+BMHJmFdTA1JIqQ3jGH3x8TwT54H9ERvbmckLmksDHECo+dOTfiHbNEtqltusdL7R
+6XIOXfAiqNjlDjoOFYNpEbz/Uw/RvmovH3UWdLxzTHgSdC2wONGjwYm2b00B0PDz
+woNDmx9thSr53/MjaFqabK6bxqlc7iRBaEhY9EnP1gZcuZTpvpomixSgBdTCPI4e
+aSUeaLIfOaGNx3JJ9LjKwp8aDo07AnTPdRzY4ImAfg8x9KGdTpNz1a9SW8rBYgTB
+8Xj8njxwXC0BtlLIvKIOUcVkj8oR1E8Bbjdgnggn6TrF5JICLLs/ZrpRA4Hp063w
+b/Qbr6DRAgMBAAECggEACFMXWFu05mPIStTYB8R9TgFL6JXXLW5QnQ4PIDqZeVP5
+DTSXqBtuITeMpABK4+VaNJS9zq9k78WXM5qeHSJ84Q4PBC/5riXtHI3/fSab955S
+iVbZcn+K4JDHwWmdDxXWc5l4HruNGXdg04/WelgCrXaNn65HgY4Z+xtmACqvy9g5
+jhw484q6kcBO+KWhM/ysm1GiQUoS7W7LFCRn6wkFoFqEjizi48/hJg+rfyIGb/q3
+f6hIlsXP5Nbz0Y5LPPaoL8SWaiqt0ZLZK5O9w1DO+DQE0WQNkxpsOjKowpTv+n+Y
+vQgQ3t2CFN/eXwpxeglPPBbADpTZCmwGYpfTrAsoPQKBgQDqRpeMhDYa5fwGpy+C
+8Wkc+8GBrDzKcBxIsEdwWP984Z3ybP+EgAbKeyQIzUQYv8Y24fUjFRyVgjmNKdUo
+ZhIu+mGJlORhuellVjF+7n2JIerVn41c5/7J8aakUO7ckyQdDWDR1E00Z59Ir8zY
+iMJqOyoGgi/wRM8k/Te0hclb5QKBgQDb9tJtmKbXkSUkMnK65N0qnPBLSncOMWBJ
+r9PSPz3WWPaVTLVoxpMLSoMqbQurnqpbOJbtyX1IutEXUauMRYhGHSThowKFpjBp
+Wgw30v3LpsKqiX1WNV/mXQ0Vk9WU1ISs+HB9kfKEg3CsULhklWsL6GXG7XZ+kATE
+BXQPtV6afQKBgQDJfuOzsLcUVYB5fGwJ1HbSvdnGHQzAFMLO5gbbo0BC+Y4uxv7R
+yIeOuXDZvSp3muHxrFB51xuZn8K+Hh++umOjUih3+76eKxeJ2COEB72jJ6/iAnPE
+V6k1qYjpRM7cmhVyg2IlttKcYw+Fpeaqyp1kXvSbWne+0H/VUZEKzBLO3QKBgA30
+pPkrHDrFDLQ1Ny5AYv/XIS/Fs7QE0fUa4LeQJ5432r0yNrhFEQNAYP4KGRl0YZ6U
+Ao9nnzlEEQwHtHib2L+KDdL7Aqf0GVI10lygWFXZaLRlMLyNel4lPTVHQd/Fc/19
+bbWp0tcxd66XGHvZNwd0YTCz1DbHcGX3apusiCoJAoGAM8LOz8qEVK9f3Uzrl0DX
+iWBnQdBOGyO4JEIi3BF9qxXzcrL4dOOOMTxNo+IWlpr+IILYqty76iCobbtVYVn7
+DuKH4tDTqRH6qWsO9vf29IsHnY6zSRxrnuRcXjOp57RfGlAwxoUICGuZKEr1EURS
++qXXl4xiyjmL4/Hk60UdiIk=
+-----END PRIVATE KEY-----`,
+};
+
 let cachedToken: { value: string; expiresAt: number } | null = null;
 
+function envVar(name: string) {
+  const value = process.env[name];
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
 function spreadsheetId() {
-  return process.env.GOOGLE_SHEETS_SPREADSHEET_ID?.trim() || DEFAULT_SPREADSHEET_ID;
+  return envVar("GOOGLE_SHEETS_SPREADSHEET_ID") || DEFAULT_SPREADSHEET_ID;
 }
 
 function sheetName() {
-  return process.env.GOOGLE_SHEETS_SHEET_NAME?.trim() || DEFAULT_SHEET_NAME;
+  return envVar("GOOGLE_SHEETS_SHEET_NAME") || DEFAULT_SHEET_NAME;
+}
+
+function parseServiceAccountJson(raw: string): ServiceAccount {
+  let text = raw.trim().replace(/^\uFEFF/, "");
+  if (text.startsWith("```")) {
+    text = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
+  }
+
+  let parsed: unknown = text;
+  for (let i = 0; i < 2; i++) {
+    if (typeof parsed !== "string") break;
+    try {
+      parsed = JSON.parse(parsed);
+    } catch {
+      throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON. Paste the full service-account file contents.");
+    }
+  }
+
+  if (!parsed || typeof parsed !== "object") {
+    throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON. Paste the full service-account file contents.");
+  }
+
+  const account = parsed as ServiceAccount;
+  if (!account.client_email || !account.private_key) {
+    throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON must include client_email and private_key.");
+  }
+
+  return {
+    client_email: account.client_email,
+    private_key: account.private_key.replace(/\\n/g, "\n"),
+  };
 }
 
 function toBase64Url(data: ArrayBuffer | string) {
@@ -42,30 +110,15 @@ function pemToPkcs8(pem: string) {
   return Buffer.from(b64, "base64");
 }
 
-async function loadServiceAccount(): Promise<ServiceAccount | null> {
-  const inlineJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-  if (inlineJson) {
-    const parsed = JSON.parse(inlineJson) as ServiceAccount;
-    if (parsed.client_email && parsed.private_key) return parsed;
-  }
+async function loadServiceAccount(): Promise<ServiceAccount> {
+  const inlineJson = envVar("GOOGLE_SERVICE_ACCOUNT_JSON");
+  if (inlineJson) return parseServiceAccountJson(inlineJson);
 
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL?.trim();
-  const key = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, "\n");
+  const email = envVar("GOOGLE_SERVICE_ACCOUNT_EMAIL");
+  const key = envVar("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY")?.replace(/\\n/g, "\n");
   if (email && key) return { client_email: email, private_key: key };
 
-  const file =
-    process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim() || "secrets/google-service-account.json";
-  try {
-    const { readFileSync } = await import("node:fs");
-    const parsed = JSON.parse(readFileSync(file, "utf8")) as ServiceAccount;
-    if (parsed.client_email && parsed.private_key) return parsed;
-  } catch {
-    if (process.env.GOOGLE_APPLICATION_CREDENTIALS?.trim()) {
-      throw new Error("Could not read GOOGLE_APPLICATION_CREDENTIALS file");
-    }
-  }
-
-  return null;
+  return EMBEDDED_ACCOUNT;
 }
 
 async function getGoogleAccessToken(account: ServiceAccount) {
@@ -119,7 +172,6 @@ async function getGoogleAccessToken(account: ServiceAccount) {
 
 async function appendWithGoogleApi(row: string[]) {
   const account = await loadServiceAccount();
-  if (!account) return false;
 
   const token = await getGoogleAccessToken(account);
   const range = encodeURIComponent(`${sheetName()}!A:F`);
@@ -141,8 +193,8 @@ async function appendWithGoogleApi(row: string[]) {
 }
 
 function lovableHeaders() {
-  const lovableKey = process.env.LOVABLE_API_KEY;
-  const connectionKey = process.env.GOOGLE_SHEETS_API_KEY;
+  const lovableKey = envVar("LOVABLE_API_KEY");
+  const connectionKey = envVar("GOOGLE_SHEETS_API_KEY");
   if (!lovableKey || !connectionKey) return null;
   return {
     Authorization: `Bearer ${lovableKey}`,
@@ -187,10 +239,6 @@ export async function appendOrderRow(data: OrderRow) {
     data.phone,
   ];
 
-  if (await appendWithGoogleApi(row)) return { ok: true as const };
-  if (await appendWithLovable(row)) return { ok: true as const };
-
-  throw new Error(
-    "Google Sheets is not configured. Set GOOGLE_APPLICATION_CREDENTIALS (or GOOGLE_SERVICE_ACCOUNT_EMAIL + GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY) and GOOGLE_SHEETS_SPREADSHEET_ID.",
-  );
+  await appendWithGoogleApi(row);
+  return { ok: true as const };
 }
