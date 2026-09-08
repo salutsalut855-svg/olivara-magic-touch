@@ -46,6 +46,7 @@ function isH3SwallowedErrorBody(body: string): boolean {
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    applyRuntimeEnv(env);
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
@@ -59,3 +60,12 @@ export default {
     }
   },
 };
+
+function applyRuntimeEnv(env: unknown) {
+  if (!env || typeof env !== "object") return;
+  for (const [key, value] of Object.entries(env as Record<string, unknown>)) {
+    if (typeof value === "string" && value.length > 0) {
+      process.env[key] = value;
+    }
+  }
+}
