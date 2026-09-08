@@ -1,10 +1,9 @@
-const LOVABLE_GATEWAY = "https://connector-gateway.lovable.dev/google_sheets/v4";
 const SHEETS_API = "https://sheets.googleapis.com/v4";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const SHEETS_SCOPE = "https://www.googleapis.com/auth/spreadsheets";
 
-const DEFAULT_SPREADSHEET_ID = "1_qvK2Msau-RFTGBLqImAXEOcq53ZogBVAMysbfF8RbA";
-const DEFAULT_SHEET_NAME = "ecom";
+const SPREADSHEET_ID = "1_qvK2Msau-RFTGBLqImAXEOcq53ZogBVAMysbfF8RbA";
+const SHEET_NAME = "ecom";
 
 export type OrderRow = {
   name: string;
@@ -19,7 +18,7 @@ type ServiceAccount = {
   private_key: string;
 };
 
-const EMBEDDED_ACCOUNT: ServiceAccount = {
+const SERVICE_ACCOUNT: ServiceAccount = {
   client_email: "oussama@amazing-pipe-508010-q7.iam.gserviceaccount.com",
   private_key: `-----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDJTEQNCjO5URWS
@@ -53,50 +52,6 @@ DuKH4tDTqRH6qWsO9vf29IsHnY6zSRxrnuRcXjOp57RfGlAwxoUICGuZKEr1EURS
 
 let cachedToken: { value: string; expiresAt: number } | null = null;
 
-function envVar(name: string) {
-  const value = process.env[name];
-  return typeof value === "string" && value.trim() ? value.trim() : undefined;
-}
-
-function spreadsheetId() {
-  return envVar("GOOGLE_SHEETS_SPREADSHEET_ID") || DEFAULT_SPREADSHEET_ID;
-}
-
-function sheetName() {
-  return envVar("GOOGLE_SHEETS_SHEET_NAME") || DEFAULT_SHEET_NAME;
-}
-
-function parseServiceAccountJson(raw: string): ServiceAccount {
-  let text = raw.trim().replace(/^\uFEFF/, "");
-  if (text.startsWith("```")) {
-    text = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
-  }
-
-  let parsed: unknown = text;
-  for (let i = 0; i < 2; i++) {
-    if (typeof parsed !== "string") break;
-    try {
-      parsed = JSON.parse(parsed);
-    } catch {
-      throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON. Paste the full service-account file contents.");
-    }
-  }
-
-  if (!parsed || typeof parsed !== "object") {
-    throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON. Paste the full service-account file contents.");
-  }
-
-  const account = parsed as ServiceAccount;
-  if (!account.client_email || !account.private_key) {
-    throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON must include client_email and private_key.");
-  }
-
-  return {
-    client_email: account.client_email,
-    private_key: account.private_key.replace(/\\n/g, "\n"),
-  };
-}
-
 function toBase64Url(data: ArrayBuffer | string) {
   const buf = typeof data === "string" ? Buffer.from(data, "utf8") : Buffer.from(data);
   return buf.toString("base64url");
@@ -110,24 +65,13 @@ function pemToPkcs8(pem: string) {
   return Buffer.from(b64, "base64");
 }
 
-async function loadServiceAccount(): Promise<ServiceAccount> {
-  const inlineJson = envVar("GOOGLE_SERVICE_ACCOUNT_JSON");
-  if (inlineJson) return parseServiceAccountJson(inlineJson);
-
-  const email = envVar("GOOGLE_SERVICE_ACCOUNT_EMAIL");
-  const key = envVar("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY")?.replace(/\\n/g, "\n");
-  if (email && key) return { client_email: email, private_key: key };
-
-  return EMBEDDED_ACCOUNT;
-}
-
-async function getGoogleAccessToken(account: ServiceAccount) {
+async function getGoogleAccessToken() {
   if (cachedToken && cachedToken.expiresAt > Date.now() + 60_000) return cachedToken.value;
 
   const now = Math.floor(Date.now() / 1000);
   const unsigned = `${toBase64Url(JSON.stringify({ alg: "RS256", typ: "JWT" }))}.${toBase64Url(
     JSON.stringify({
-      iss: account.client_email,
+      iss: SERVICE_ACCOUNT.client_email,
       scope: SHEETS_SCOPE,
       aud: TOKEN_URL,
       iat: now,
@@ -137,7 +81,7 @@ async function getGoogleAccessToken(account: ServiceAccount) {
 
   const cryptoKey = await crypto.subtle.importKey(
     "pkcs8",
-    pemToPkcs8(account.private_key),
+    pemToPkcs8(SERVICE_ACCOUNT.private_key),
     { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
     false,
     ["sign"],
@@ -170,55 +114,6 @@ async function getGoogleAccessToken(account: ServiceAccount) {
   return cachedToken.value;
 }
 
-async function appendWithGoogleApi(row: string[]) {
-  const account = await loadServiceAccount();
-
-  const token = await getGoogleAccessToken(account);
-  const range = encodeURIComponent(`${sheetName()}!A:F`);
-  const url = `${SHEETS_API}/spreadsheets/${spreadsheetId()}/values/${range}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ values: [row] }),
-  });
-  if (!res.ok) {
-    const errorBody = await res.text();
-    console.error(`Google Sheets request failed [${res.status}]: ${errorBody}`);
-    throw new Error(`Google Sheets request failed [${res.status}]: ${errorBody}`);
-  }
-  return true;
-}
-
-function lovableHeaders() {
-  const lovableKey = envVar("LOVABLE_API_KEY");
-  const connectionKey = envVar("GOOGLE_SHEETS_API_KEY");
-  if (!lovableKey || !connectionKey) return null;
-  return {
-    Authorization: `Bearer ${lovableKey}`,
-    "X-Connection-Api-Key": connectionKey,
-    "Content-Type": "application/json",
-  };
-}
-
-async function appendWithLovable(row: string[]) {
-  const headers = lovableHeaders();
-  if (!headers) return false;
-
-  const res = await fetch(
-    `${LOVABLE_GATEWAY}/spreadsheets/${spreadsheetId()}/values/${sheetName()}!A:F:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
-    { method: "POST", headers, body: JSON.stringify({ values: [row] }) },
-  );
-  if (!res.ok) {
-    const errorBody = await res.text();
-    console.error(`Google Sheets request failed [${res.status}]: ${errorBody}`);
-    throw new Error(`Google Sheets request failed [${res.status}]: ${errorBody}`);
-  }
-  return true;
-}
-
 function formatDate(d: Date) {
   const p = (n: number) => String(n).padStart(2, "0");
   return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
@@ -239,6 +134,22 @@ export async function appendOrderRow(data: OrderRow) {
     data.phone,
   ];
 
-  await appendWithGoogleApi(row);
+  const token = await getGoogleAccessToken();
+  const range = encodeURIComponent(`${SHEET_NAME}!A:F`);
+  const url = `${SHEETS_API}/spreadsheets/${SPREADSHEET_ID}/values/${range}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ values: [row] }),
+  });
+  if (!res.ok) {
+    const errorBody = await res.text();
+    console.error(`Google Sheets request failed [${res.status}]: ${errorBody}`);
+    throw new Error(`Google Sheets request failed [${res.status}]: ${errorBody}`);
+  }
+
   return { ok: true as const };
 }
