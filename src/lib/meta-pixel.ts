@@ -83,13 +83,20 @@ function fbqTrack(event: string, params?: Record<string, unknown>, extra?: Recor
   else window.fbq("track", event, params);
 }
 
-function once(storage: Storage, key: string, fn: () => void) {
-  try {
-    if (storage.getItem(key)) return false;
-    storage.setItem(key, "1");
-  } catch {
-    fn();
-    return true;
+const fired = new Set<string>();
+
+function once(key: string, fn: () => void, storage?: Storage) {
+  if (storage) {
+    try {
+      if (storage.getItem(key)) return false;
+      storage.setItem(key, "1");
+    } catch {
+      /* continue */
+    }
+  } else if (fired.has(key)) {
+    return false;
+  } else {
+    fired.add(key);
   }
   fn();
   return true;
@@ -100,25 +107,29 @@ export function trackPageView(eventId: string) {
 }
 
 export function trackLandingView() {
-  const firedView = once(sessionStorage, "meta-viewcontent", () => {
+  const firedView = once("meta-viewcontent", () => {
     fbqTrack("ViewContent", PRODUCT);
   });
-  const firedFirst = once(localStorage, "meta-first-visit", () => {
-    if (typeof window.fbq !== "function") return;
-    window.fbq("trackCustom", "FirstVisit", PRODUCT);
-  });
+  const firedFirst = once(
+    "meta-first-visit",
+    () => {
+      if (typeof window.fbq !== "function") return;
+      window.fbq("trackCustom", "FirstVisit", PRODUCT);
+    },
+    localStorage,
+  );
   return { firedView, firedFirst };
 }
 
 export function trackViewOrderForm() {
-  return once(sessionStorage, "meta-view-order", () => {
+  return once("meta-view-order", () => {
     if (typeof window.fbq !== "function") return;
     window.fbq("trackCustom", "ViewOrderForm", PRODUCT);
   });
 }
 
 export function trackInitiateCheckout(offer: "pack" | "duo" = "pack") {
-  return once(sessionStorage, "meta-initiate-checkout", () => {
+  return once("meta-initiate-checkout", () => {
     fbqTrack("InitiateCheckout", {
       ...PRODUCT,
       value: offerValue(offer),
@@ -128,7 +139,7 @@ export function trackInitiateCheckout(offer: "pack" | "duo" = "pack") {
 }
 
 export function trackLead(offer: "pack" | "duo") {
-  return once(sessionStorage, "meta-lead", () => {
+  return once("meta-lead", () => {
     fbqTrack("Lead", {
       ...PRODUCT,
       value: offerValue(offer),
