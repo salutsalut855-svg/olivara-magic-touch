@@ -2,7 +2,16 @@ import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { useServerFn } from "@tanstack/react-start";
 import { submitOrder } from "@/lib/orders.functions";
-import { offerValue, readCookie, trackInitiateCheckout, trackLead, trackPurchasePixel } from "@/lib/meta-pixel";
+import { reportMetaEvent } from "@/lib/meta.functions";
+import {
+  browserMetaContext,
+  offerValue,
+  readCookie,
+  newEventId,
+  trackInitiateCheckout,
+  trackLead,
+  trackPurchasePixel,
+} from "@/lib/meta-pixel";
 
 const schema = z.object({
   name: z.string().trim().min(3, "المرجو كتابة الاسم الكامل").max(80),
@@ -38,6 +47,18 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
   const [serverError, setServerError] = useState("");
   const [offer, setOffer] = useState<"pack" | "duo">("pack");
   const send = useServerFn(submitOrder);
+  const report = useServerFn(reportMetaEvent);
+
+  function capiEvent(eventName: "InitiateCheckout" | "Lead", offerId: "pack" | "duo") {
+    void report({
+      data: {
+        eventName,
+        eventId: newEventId(eventName === "Lead" ? "lead" : "ic"),
+        offer: offerId,
+        ...browserMetaContext(),
+      },
+    });
+  }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -52,7 +73,7 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
     setErrors({});
     setServerError("");
     setSending(true);
-    trackLead(offer);
+    if (trackLead(offer)) capiEvent("Lead", offer);
     try {
       const eventId = `purchase_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
       const value = offerValue(offer);
@@ -96,7 +117,9 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
   return (
     <form
       onSubmit={onSubmit}
-      onFocusCapture={() => trackInitiateCheckout(offer)}
+      onFocusCapture={() => {
+        if (trackInitiateCheckout(offer)) capiEvent("InitiateCheckout", offer);
+      }}
       noValidate
       className="space-y-4 text-right"
     >
@@ -109,7 +132,7 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
               key={o.id}
               onClick={() => {
                 setOffer(o.id);
-                trackInitiateCheckout(o.id);
+                if (trackInitiateCheckout(o.id)) capiEvent("InitiateCheckout", o.id);
               }}
               className={`flex items-center justify-between gap-3 rounded-2xl border-2 px-4 py-3 text-right transition ${
                 offer === o.id

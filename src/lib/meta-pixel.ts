@@ -10,12 +10,12 @@ t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '${META_PIXEL_ID}');
-fbq('track', 'PageView');
 `;
 
 declare global {
   interface Window {
-    fbq?: (...args: unknown[]) => void;
+    fbq?: ((...args: unknown[]) => void) & { queue?: unknown[]; loaded?: boolean; version?: string };
+    _fbq?: unknown;
   }
 }
 
@@ -31,9 +31,50 @@ export function offerValue(offer: "pack" | "duo") {
   return offer === "duo" ? 229 : 189;
 }
 
+export function newEventId(prefix: string) {
+  return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+}
+
 export function readCookie(name: string) {
   const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
   return match ? decodeURIComponent(match[1]) : undefined;
+}
+
+export function browserMetaContext() {
+  return {
+    eventSourceUrl: window.location.href,
+    fbp: readCookie("_fbp"),
+    fbc: readCookie("_fbc"),
+  };
+}
+
+export function ensureMetaPixel() {
+  if (typeof window === "undefined") return;
+
+  if (typeof window.fbq !== "function") {
+    type FbqFn = ((...args: unknown[]) => void) & {
+      queue: unknown[];
+      loaded: boolean;
+      version: string;
+    };
+    const n = function (...args: unknown[]) {
+      n.queue.push(args);
+    } as FbqFn;
+    n.queue = [];
+    n.loaded = true;
+    n.version = "2.0";
+    window.fbq = n;
+    window._fbq = n;
+  }
+
+  if (!document.querySelector('script[src*="fbevents.js"]')) {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "https://connect.facebook.net/en_US/fbevents.js";
+    document.head.appendChild(script);
+  }
+
+  window.fbq?.("init", META_PIXEL_ID);
 }
 
 function fbqTrack(event: string, params?: Record<string, unknown>, extra?: Record<string, unknown>) {
@@ -44,37 +85,40 @@ function fbqTrack(event: string, params?: Record<string, unknown>, extra?: Recor
 
 function once(storage: Storage, key: string, fn: () => void) {
   try {
-    if (storage.getItem(key)) return;
+    if (storage.getItem(key)) return false;
     storage.setItem(key, "1");
   } catch {
     fn();
-    return;
+    return true;
   }
   fn();
+  return true;
 }
 
-/** First visit ever + saw the landing offer this session. */
+export function trackPageView(eventId: string) {
+  fbqTrack("PageView", undefined, { eventID: eventId });
+}
+
 export function trackLandingView() {
-  once(sessionStorage, "meta-viewcontent", () => {
+  const firedView = once(sessionStorage, "meta-viewcontent", () => {
     fbqTrack("ViewContent", PRODUCT);
   });
-  once(localStorage, "meta-first-visit", () => {
+  const firedFirst = once(localStorage, "meta-first-visit", () => {
     if (typeof window.fbq !== "function") return;
     window.fbq("trackCustom", "FirstVisit", PRODUCT);
   });
+  return { firedView, firedFirst };
 }
 
-/** Scrolled to / saw the order form. */
 export function trackViewOrderForm() {
-  once(sessionStorage, "meta-view-order", () => {
+  return once(sessionStorage, "meta-view-order", () => {
     if (typeof window.fbq !== "function") return;
     window.fbq("trackCustom", "ViewOrderForm", PRODUCT);
   });
 }
 
-/** Started typing in the form. */
 export function trackInitiateCheckout(offer: "pack" | "duo" = "pack") {
-  once(sessionStorage, "meta-initiate-checkout", () => {
+  return once(sessionStorage, "meta-initiate-checkout", () => {
     fbqTrack("InitiateCheckout", {
       ...PRODUCT,
       value: offerValue(offer),
@@ -83,9 +127,8 @@ export function trackInitiateCheckout(offer: "pack" | "duo" = "pack") {
   });
 }
 
-/** Clicked submit with a valid form (before server response). */
 export function trackLead(offer: "pack" | "duo") {
-  once(sessionStorage, "meta-lead", () => {
+  return once(sessionStorage, "meta-lead", () => {
     fbqTrack("Lead", {
       ...PRODUCT,
       value: offerValue(offer),

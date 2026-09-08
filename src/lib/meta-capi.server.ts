@@ -34,36 +34,47 @@ export type CapiOrder = {
   userAgent?: string;
 };
 
-export async function sendPurchaseCapi(order: CapiOrder) {
-  const value = order.offer === "duo" ? 229 : 189;
-  const firstName = order.name.trim().split(/\s+/)[0] ?? "";
-  const phone = normalizeMoroccoPhone(order.phone);
-
+export async function sendCapiEvent(input: {
+  eventName: string;
+  eventId: string;
+  eventSourceUrl?: string;
+  fbp?: string;
+  fbc?: string;
+  offer?: "pack" | "duo";
+  name?: string;
+  phone?: string;
+  city?: string;
+}) {
+  const value = input.offer === "duo" ? 229 : 189;
   const user_data: Record<string, unknown> = {
     country: [await sha256("ma")],
   };
-  if (phone) user_data.ph = [await sha256(phone)];
-  if (firstName) user_data.fn = [await sha256(firstName)];
-  if (order.city) user_data.ct = [await sha256(order.city)];
-  if (order.fbp) user_data.fbp = order.fbp;
-  if (order.fbc) user_data.fbc = order.fbc;
-  if (order.clientIp) user_data.client_ip_address = order.clientIp;
-  if (order.userAgent) user_data.client_user_agent = order.userAgent;
+  if (input.phone) {
+    const phone = normalizeMoroccoPhone(input.phone);
+    if (phone) user_data.ph = [await sha256(phone)];
+  }
+  if (input.name) {
+    const firstName = input.name.trim().split(/\s+/)[0] ?? "";
+    if (firstName) user_data.fn = [await sha256(firstName)];
+  }
+  if (input.city) user_data.ct = [await sha256(input.city)];
+  if (input.fbp) user_data.fbp = input.fbp;
+  if (input.fbc) user_data.fbc = input.fbc;
 
   const payload = {
     data: [
       {
-        event_name: "Purchase",
+        event_name: input.eventName,
         event_time: Math.floor(Date.now() / 1000),
-        event_id: order.eventId,
+        event_id: input.eventId,
         action_source: "website",
-        event_source_url: order.eventSourceUrl || "https://olivara.ma/",
+        event_source_url: input.eventSourceUrl || "https://olivara.boxliv.com/",
         user_data,
         custom_data: {
           currency: "MAD",
           value,
-          content_name: order.offer === "duo" ? "باقة عبوتين" : "الباقة الأساسية 3 في 1",
-          content_ids: [order.offer],
+          content_name: input.offer === "duo" ? "باقة عبوتين" : "الباقة الأساسية 3 في 1",
+          content_ids: [input.offer || "pack"],
           content_type: "product",
         },
       },
@@ -85,4 +96,18 @@ export async function sendPurchaseCapi(order: CapiOrder) {
   } catch (err) {
     console.error("Meta CAPI error:", err);
   }
+}
+
+export async function sendPurchaseCapi(order: CapiOrder) {
+  await sendCapiEvent({
+    eventName: "Purchase",
+    eventId: order.eventId,
+    eventSourceUrl: order.eventSourceUrl,
+    fbp: order.fbp,
+    fbc: order.fbc,
+    offer: order.offer,
+    name: order.name,
+    phone: order.phone,
+    city: order.city,
+  });
 }
