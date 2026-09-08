@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { useServerFn } from "@tanstack/react-start";
 import { submitOrder } from "@/lib/orders.functions";
+import { offerValue, readCookie, trackInitiateCheckout, trackLead, trackPurchasePixel } from "@/lib/meta-pixel";
 
 const schema = z.object({
   name: z.string().trim().min(3, "المرجو كتابة الاسم الكامل").max(80),
@@ -51,8 +52,21 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
     setErrors({});
     setServerError("");
     setSending(true);
+    trackLead(offer);
     try {
-      await send({ data: { ...parsed.data, offer } });
+      const eventId = `purchase_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+      const value = offerValue(offer);
+      await send({
+        data: {
+          ...parsed.data,
+          offer,
+          eventId,
+          eventSourceUrl: window.location.href,
+          fbp: readCookie("_fbp"),
+          fbc: readCookie("_fbc"),
+        },
+      });
+      trackPurchasePixel(eventId, value);
       setDone(true);
     } catch {
       setServerError("وقع مشكل فإرسال الطلب. المرجو المحاولة مرة أخرى.");
@@ -80,7 +94,12 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="space-y-4 text-right">
+    <form
+      onSubmit={onSubmit}
+      onFocusCapture={() => trackInitiateCheckout(offer)}
+      noValidate
+      className="space-y-4 text-right"
+    >
       <div>
         <p className="mb-2 text-sm font-bold text-foreground">اختار الباقة</p>
         <div className="grid gap-3">
@@ -88,7 +107,10 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
             <button
               type="button"
               key={o.id}
-              onClick={() => setOffer(o.id)}
+              onClick={() => {
+                setOffer(o.id);
+                trackInitiateCheckout(o.id);
+              }}
               className={`flex items-center justify-between gap-3 rounded-2xl border-2 px-4 py-3 text-right transition ${
                 offer === o.id
                   ? "border-primary bg-cream shadow-soft"

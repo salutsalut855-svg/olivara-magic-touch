@@ -5,6 +5,7 @@ import { FloatingActions } from "@/components/olivara/FloatingActions";
 import { ExitPopup } from "@/components/olivara/ExitPopup";
 
 import { OrderForm } from "@/components/olivara/OrderForm";
+import { MetaFunnelTracker } from "@/components/olivara/MetaFunnelTracker";
 import { useReveal } from "@/components/olivara/useReveal";
 
 const TITLE = "OLIVARA Hair Care Pack — باقة 3 في 1 بـ 189 DH";
@@ -152,6 +153,7 @@ function Index() {
 
   return (
     <div ref={root} className="overflow-x-hidden bg-background pb-24 md:pb-0">
+      <MetaFunnelTracker />
       <StickyBars />
       <FloatingActions />
       <ExitPopup />
