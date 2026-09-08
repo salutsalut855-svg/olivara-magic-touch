@@ -1,8 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import pack from "@/assets/olivara-pack.jpg.asset.json";
-import powder from "@/assets/olivara-powder.jpg.asset.json";
-import grid from "@/assets/olivara-grid.jpg.asset.json";
-import bottle from "@/assets/olivara-bottle.png.asset.json";
 import { Countdown } from "@/components/olivara/Countdown";
 import { StickyBars } from "@/components/olivara/StickyBars";
 import { FloatingActions } from "@/components/olivara/FloatingActions";
@@ -29,21 +25,28 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+const IMAGES = {
+  pack: "/images/1.jpeg",
+  bottle: "/images/e10cfe43-3cfd-4f04-acac-a16f31cd2135.jpeg",
+  powder: "/images/3.jpeg",
+  grid: "/images/2.jpeg",
+};
+
 const products = [
   {
-    img: bottle.url,
+    img: IMAGES.bottle,
     name: "بخاخ OLIVARA المغذي",
     en: "Hair Mist Spray",
     d: "تركيبة غنية بخلاصات الزيوت والأعشاب الطبيعية لترطيب وتقوية خصلات الشعر يومياً.",
   },
   {
-    img: powder.url,
+    img: IMAGES.powder,
     name: "بودرة الأعشاب النباتية المركزة",
     en: "Botanical Herbal Powder",
     d: "خلطة نباتية طبيعية لتغذية فروة الرأس وتحفيز بصيلات الشعر بعمق.",
   },
   {
-    img: grid.url,
+    img: IMAGES.grid,
     name: "فرشاة تدليك الفروة السيليكونية",
     en: "Scalp Massager",
     d: "سيليكون طبي ناعم لتحفيز الدورة الدموية ومساعدة الفروة على امتصاص المكونات بفعالية.",
@@ -200,7 +203,7 @@ function Index() {
             <div className="relative mx-auto max-w-xs md:max-w-sm">
               <div className="absolute inset-0 -z-10 rounded-full bg-gold-soft/60 blur-3xl" />
               <img
-                src={pack.url}
+                src={IMAGES.pack}
                 alt="باقة OLIVARA 3 في 1: سبراي الأعشاب وبودرة الأعشاب وفرشاة تدليك الفروة"
                 width={576}
                 height={1024}
@@ -314,7 +317,7 @@ function Index() {
           <SectionTitle kicker="المكونات" title="مكونات طبيعية مختارة بعناية" />
           <div className="reveal mb-8 overflow-hidden rounded-2xl shadow-lift">
             <img
-              src={grid.url}
+              src={IMAGES.grid}
               alt="مكونات ومنتجات OLIVARA الطبيعية"
               loading="lazy"
               className="h-56 w-full object-cover object-center sm:h-80"

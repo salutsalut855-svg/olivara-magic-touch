@@ -28,7 +28,12 @@ export function ExitPopup() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-foreground/50 p-4 backdrop-blur-sm">
+    <div
+      className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-foreground/50 p-4 backdrop-blur-sm"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) setOpen(false);
+      }}
+    >
       <div className="my-auto w-full max-w-sm rounded-3xl border border-gold-soft bg-card p-6 text-center shadow-lift">
         <p className="text-sm font-bold text-accent">🔥 عرض خاص</p>
         <h3 className="mt-2 text-xl font-extrabold text-foreground">مهلاً! ما تفوتش الفرصة</h3>
