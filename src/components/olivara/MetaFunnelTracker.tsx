@@ -30,22 +30,26 @@ export function MetaFunnelTracker() {
     }
 
     const el = document.getElementById("order");
-    if (!el) return;
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
+    if (el) {
+      const reveal = () => {
         if (trackViewOrderForm()) {
           void report({
             data: { eventName: "ViewOrderForm", eventId: newEventId("vo"), ...browserMetaContext() },
           });
         }
-        io.disconnect();
-      },
-      { threshold: 0.35 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
+      };
+      if (window.location.hash === "#order") reveal();
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          reveal();
+          io.disconnect();
+        },
+        { threshold: 0.2 },
+      );
+      io.observe(el);
+      return () => io.disconnect();
+    }
   }, [report]);
 
   return null;

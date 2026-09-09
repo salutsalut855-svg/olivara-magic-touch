@@ -120,6 +120,9 @@ export function OrderForm({ compact = false }: { compact?: boolean }) {
       onFocusCapture={() => {
         if (trackInitiateCheckout(offer)) capiEvent("InitiateCheckout", offer);
       }}
+      onInput={() => {
+        if (trackInitiateCheckout(offer)) capiEvent("InitiateCheckout", offer);
+      }}
       noValidate
       className="space-y-4 text-right"
     >

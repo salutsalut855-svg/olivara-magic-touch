@@ -15,7 +15,7 @@ export function ExitPopup() {
     };
     const onScroll = () => {
       if (timer) return;
-      timer = setTimeout(fire, 10000);
+      timer = setTimeout(fire, 20000);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
